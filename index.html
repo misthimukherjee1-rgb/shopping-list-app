@@ -3,140 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shopping List</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#f6f7fb; margin:0; padding:20px; }
-    .app { max-width: 520px; margin: 0 auto; background:#fff; border-radius:14px; padding:18px; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
-    h1 { margin:0 0 12px; font-size:22px; }
-    .row { display:flex; gap:8px; }
-    input { flex:1; padding:12px; border:1px solid #ddd; border-radius:10px; outline:none; }
-    button { padding:12px 14px; border:0; border-radius:10px; cursor:pointer; background:#2563eb; color:#fff; font-weight:600; }
-    button:active { transform: translateY(1px); }
-    ul { list-style:none; padding:0; margin:14px 0 0; }
-    li { display:flex; align-items:center; justify-content:space-between; padding:10px 10px; border:1px solid #eee; border-radius:12px; margin-bottom:8px; }
-    li.done { opacity:.7; text-decoration: line-through; }
-    .left { display:flex; align-items:center; gap:10px; }
-    .pill { font-size:12px; padding:4px 8px; border-radius:999px; background:#f1f5f9; color:#334155; }
-    .actions { display:flex; gap:8px; }
-    .iconBtn { background:#eef2ff; color:#1e40af; }
-    .danger { background:#fee2e2; color:#991b1b; }
-    .hint { color:#64748b; font-size:12px; margin-top:10px; }
-    .footerRow { display:flex; justify-content:space-between; margin-top:10px; gap:8px; }
-    .secondary { background:#0f172a; }
-    .muted { background:#e2e8f0; color:#0f172a; }
-  </style>
+  <title>Shopping List App</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app">
+  <main class="app">
     <h1>🛒 Shopping List</h1>
 
-    <div class="row">
+    <section class="row">
       <input id="itemInput" placeholder="Add an item (e.g., Milk)" />
       <button id="addBtn">Add</button>
-    </div>
+    </section>
 
-    <div class="footerRow">
+    <section class="footerRow">
       <button id="clearDoneBtn" class="muted">Clear Done</button>
       <button id="clearAllBtn" class="danger">Clear All</button>
-    </div>
+    </section>
 
-    <ul id="list"></ul>
-    <div class="hint">Tip: Click ✅ to mark done, 🗑️ to delete. Saved automatically.</div>
-  </div>
+    <ul id="list" class="list"></ul>
 
-  <script>
-    const input = document.getElementById("itemInput");
-    const addBtn = document.getElementById("addBtn");
-    const listEl = document.getElementById("list");
-    const clearDoneBtn = document.getElementById("clearDoneBtn");
-    const clearAllBtn = document.getElementById("clearAllBtn");
+    <p class="hint">Tip: Click ✅ to mark done, 🗑️ to delete. Saved automatically.</p>
+  </main>
 
-    // Load saved items
-    let items = JSON.parse(localStorage.getItem("shopping_items") || "[]");
-
-    function save() {
-      localStorage.setItem("shopping_items", JSON.stringify(items));
-    }
-
-    function render() {
-      listEl.innerHTML = "";
-      items.forEach((item, index) => {
-        const li = document.createElement("li");
-        li.className = item.done ? "done" : "";
-
-        const left = document.createElement("div");
-        left.className = "left";
-
-        const label = document.createElement("span");
-        label.textContent = item.text;
-
-        const pill = document.createElement("span");
-        pill.className = "pill";
-        pill.textContent = item.done ? "Done" : "To buy";
-
-        left.appendChild(label);
-        left.appendChild(pill);
-
-        const actions = document.createElement("div");
-        actions.className = "actions";
-
-        const toggleBtn = document.createElement("button");
-        toggleBtn.className = "iconBtn";
-        toggleBtn.textContent = item.done ? "↩️" : "✅";
-        toggleBtn.title = "Toggle done";
-        toggleBtn.onclick = () => {
-          items[index].done = !items[index].done;
-          save();
-          render();
-        };
-
-        const delBtn = document.createElement("button");
-        delBtn.className = "danger";
-        delBtn.textContent = "🗑️";
-        delBtn.title = "Delete";
-        delBtn.onclick = () => {
-          items.splice(index, 1);
-          save();
-          render();
-        };
-
-        actions.appendChild(toggleBtn);
-        actions.appendChild(delBtn);
-
-        li.appendChild(left);
-        li.appendChild(actions);
-        listEl.appendChild(li);
-      });
-    }
-
-    function addItem() {
-      const text = input.value.trim();
-      if (!text) return;
-      items.unshift({ text, done: false });
-      input.value = "";
-      save();
-      render();
-      input.focus();
-    }
-
-    addBtn.addEventListener("click", addItem);
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") addItem();
-    });
-
-    clearDoneBtn.onclick = () => {
-      items = items.filter(i => !i.done);
-      save();
-      render();
-    };
-
-    clearAllBtn.onclick = () => {
-      items = [];
-      save();
-      render();
-    };
-
-    render();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
